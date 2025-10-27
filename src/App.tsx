@@ -7,8 +7,8 @@ import currentFutokyakuAsset from "./assets/current-futokyaku.svg";
 import footerAsset from "./assets/footer.png";
 import futokyakuAsset from "./assets/futokyaku.png";
 import migiAsset from "./assets/migi.png";
-import sonekiAsset from "./assets/soneki.svg";
 import { useSocket } from "./useSocket";
+import waitingAsset from "./assets/waiting.png";
 
 const width = 1920 * 0.6;
 const height = 1080 * 0.6;
@@ -31,6 +31,10 @@ const globalStyle = css`
     font-family: "ShinGo";
     font-weight: 200;
     src: url("/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    src: url("/Montserrat-VariableFont_wght.ttf") format("truetype");
   }
 `;
 
@@ -65,7 +69,7 @@ const FooterContent = styled.div`
   line-height: 1;
   color: #fff;
   font-size: ${w(50)};
-  padding: 0 0 0 ${w(45)};
+  padding: 0 0 0 ${w(40)};
   display: flex;
   gap: ${w(30)};
   position: absolute;
@@ -125,31 +129,43 @@ const CallingList = styled.div`
 const CallingItem = styled.div`
   color: #000;
   flex: ${w(150)} 0 0;
-  line-height: 1;
+  line-height: 0.85;
   text-align: center;
-  font-size: ${w(60)};
+  font-family: "Montserrat";
+  font-size: ${w(70)};
+  font-weight: 600;
   text-shadow: 0 ${h(4)} ${w(4)} rgba(255, 255, 255, 1),
     0 0 ${w(20)} rgba(255, 255, 255, 0.8);
   padding: ${h(18)} ${w(8)};
   box-shadow: 0 ${h(4)} ${w(6)} rgba(0, 0, 0, 0.5);
   border-radius: ${w(8)};
-  background: hsl(220, 100%, 89.4%);
+  background: hsl(45, 100%, 90%);
   display: inline-block;
 `;
 
 const Waiting = styled.div`
-  line-height: 1;
-  font-size: ${w(240)};
-  color: #fff;
-  text-shadow: 0 ${h(10)} ${w(20)} rgba(0, 0, 0, 0.5);
+  width: ${w(1920)};
+  height: ${h(1080)};
+  background: url(${waitingAsset});
+  background-size: 100% 100%;
   position: absolute;
-  bottom: ${h(160)};
-  left: ${w(45)};
+  top: ${h(0)};
+  left: ${w(0)};
   z-index: 100;
 `;
 
-const WaitingSub = styled.div`
-  font-size: ${w(120)};
+const WaitingMinutes = styled.div`
+  width: ${w(400)};
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 ${h(10)} ${w(10)} rgba(0, 0, 0, 0.1);
+  font-size: ${w(270)};
+  font-family: "Montserrat";
+  font-weight: 700;
+  position: absolute;
+  bottom: ${h(285)};
+  left: ${w(65)};
 `;
 
 const Futokyaku = styled.div`
@@ -175,18 +191,6 @@ const FutokyakuName = styled.div<{ no: number }>`
   line-height: ${h(114)};
   font-size: ${({ no }) => w(70 - no * 10)};
   font-weight: 200;
-`;
-
-const Soneki = styled.div`
-  mix-blend-mode: overlay;
-  position: absolute;
-  bottom: ${h(98)};
-  left: ${w(480)};
-
-  img {
-    height: ${h(390)};
-    object-fit: contain;
-  }
 `;
 
 const App = () => {
@@ -220,20 +224,20 @@ const App = () => {
               alt="呼び出し中番号 番号が表示されている方は列にお並びください"
             />
             <MigiContent>
-              <CallingList>
-                {currentCallings.map((c) => (
-                  <CallingItem key={c}>{c}</CallingItem>
-                ))}
-              </CallingList>
+              {currentCallings.length > 0 ? (
+                <CallingList>
+                  {currentCallings.map((c) => (
+                    <CallingItem key={c}>{c}</CallingItem>
+                  ))}
+                </CallingList>
+              ) : (
+                <>TODO: なにかを出す</>
+              )}
             </MigiContent>
           </Migi>
           <Waiting>
-            {waitingTime}
-            <WaitingSub>分待ち</WaitingSub>
+            <WaitingMinutes>{waitingTime}</WaitingMinutes>
           </Waiting>
-          <Soneki>
-            <img src={sonekiAsset} alt="損益分岐点 nnn 杯 現在の杯数" />
-          </Soneki>
           <Futokyaku>
             <FutokyakuList>
               {futokyakus.slice(0, 3).map((c, i) => (

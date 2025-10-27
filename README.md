@@ -1,19 +1,12 @@
 # sai
 
-デジタルサイネージ
+Vite + React + TypeScript で構築された，驚額の殿堂3（スリー）用のデジタルサイネージです．
 
-## 表示すべき要件
-
-[must]
-- 太客一覧
-- 呼出番号
-- 待ち時間
-
-[should]
-- 損益分岐点
-
-[may]
-- 世論調査（意味ある意味ない.com 投票結果）
-- 壁破りゲームハイスコア
+要件：<https://hackmd.io/b4EHlh_XSWC3S1jDRTe3uQ>
 
 ## 開発
+
+```
+yarn
+yarn run dev
+```

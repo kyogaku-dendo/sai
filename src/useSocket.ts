@@ -14,7 +14,7 @@ interface CallingHidden {
 export const useSocket = () => {
   // 待ち時間
   // TODO
-  const waitingTime = 50;
+  const waitingTime = "30";
 
   // 現在呼び出し中の番号
   // TODO

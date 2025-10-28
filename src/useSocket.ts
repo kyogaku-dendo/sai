@@ -27,15 +27,25 @@ interface RequestCallingOrdersMessage {
   type: "REQUEST_CALLING_ORDERS";
 }
 
+interface RequestWaitingTimeMessage {
+  type: "REQUEST_WAITING_TIME";
+}
+
+interface WaitingTimeMessage {
+  type: "WAITING_TIME";
+  payload: { waitingTime: number };
+}
+
 type PostMessageEvent =
   | CallOrdersMessage
   | CompletePaymentMessage
-  | RequestCallingOrdersMessage;
+  | RequestCallingOrdersMessage
+  | RequestWaitingTimeMessage
+  | WaitingTimeMessage;
 
 export const useSocket = () => {
   // 待ち時間
-  // TODO
-  const waitingTime = "30";
+  const [waitingTime, setWaitingTime] = useState<string>("--");
 
   // 現在呼び出し中の番号
   const [currentCallings, setCurrentCallings] = useState<string[]>([]);
@@ -72,19 +82,33 @@ export const useSocket = () => {
         const tag = event.data.payload.tag;
         console.log("COMPLETE_PAYMENT:", tag);
         setCurrentCallings((prev) => prev.filter((t) => t !== tag));
+      } else if (event.data.type === "WAITING_TIME") {
+        // 待ち時間の応答
+        const { waitingTime: time } = event.data.payload;
+        console.log("WAITING_TIME:", time);
+        setWaitingTime(time.toString());
       }
     };
 
     channel.addEventListener("message", handleMessage);
 
-    console.log("Fetching calling orders from POS");
-    channel.postMessage({
-      type: "REQUEST_CALLING_ORDERS",
-    });
+    const syncWithPOS = () => {
+      channel.postMessage({
+        type: "REQUEST_CALLING_ORDERS",
+      });
+      channel.postMessage({
+        type: "REQUEST_WAITING_TIME",
+      });
+    };
+    syncWithPOS();
+
+    // 30秒おきに同期
+    const intervalId = setInterval(syncWithPOS, 30000);
 
     return () => {
       channel.removeEventListener("message", handleMessage);
       channel.close();
+      clearInterval(intervalId);
     };
   }, []);
 

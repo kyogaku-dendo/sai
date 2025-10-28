@@ -100,8 +100,9 @@ export const useSocket = () => {
         // 太客一覧の応答
         const { futokyakus: futokyakuList } = event.data.payload;
         console.log("FUTOKYAKUS:", futokyakuList);
-        // チップ額の多い順に並び替えて名前のみの配列にする
+        // 空のエントリーを除外してチップ額の多い順に並び替えて名前のみの配列にする
         const sortedNames = futokyakuList
+          .filter((f) => f.name !== "" && f.tipAmount > 0)
           .sort((a, b) => b.tipAmount - a.tipAmount)
           .map((f) => f.name);
         setFutokyakus(sortedNames);

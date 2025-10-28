@@ -207,7 +207,7 @@ const App = () => {
       <Global styles={globalStyle} />
       <div ref={screenRef}>
         <Wrapper>
-          <video src="/movie.mp4" autoPlay muted loop />
+          <video src="/sai/movie.mp4" autoPlay muted loop />
           <Footer>
             <FooterContent>
               <CurrentFutokyaku>

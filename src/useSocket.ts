@@ -23,7 +23,14 @@ interface CompletePaymentMessage {
   payload: { tag: string };
 }
 
-type PostMessageEvent = CallOrdersMessage | CompletePaymentMessage;
+interface RequestCallingOrdersMessage {
+  type: "REQUEST_CALLING_ORDERS";
+}
+
+type PostMessageEvent =
+  | CallOrdersMessage
+  | CompletePaymentMessage
+  | RequestCallingOrdersMessage;
 
 export const useSocket = () => {
   // 待ち時間
@@ -69,6 +76,11 @@ export const useSocket = () => {
     };
 
     channel.addEventListener("message", handleMessage);
+
+    console.log("Fetching calling orders from POS");
+    channel.postMessage({
+      type: "REQUEST_CALLING_ORDERS",
+    });
 
     return () => {
       channel.removeEventListener("message", handleMessage);

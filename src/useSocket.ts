@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 
+export type FutokyakuDetail = {
+  name: string;
+  tipAmount: number;
+  createdAt: string;
+};
+
 interface Calling {
   tag: string; // 番号
   createdAt: number; // 作成日時
@@ -36,12 +42,23 @@ interface WaitingTimeMessage {
   payload: { waitingTime: number };
 }
 
+interface RequestFutokyakusMessage {
+  type: "REQUEST_FUTOKYAKUS";
+}
+
+interface FutokyakusMessage {
+  type: "FUTOKYAKUS";
+  payload: { futokyakus: FutokyakuDetail[] };
+}
+
 type PostMessageEvent =
   | CallOrdersMessage
   | CompletePaymentMessage
   | RequestCallingOrdersMessage
   | RequestWaitingTimeMessage
-  | WaitingTimeMessage;
+  | WaitingTimeMessage
+  | RequestFutokyakusMessage
+  | FutokyakusMessage;
 
 export const useSocket = () => {
   // 待ち時間
@@ -50,16 +67,8 @@ export const useSocket = () => {
   // 現在呼び出し中の番号
   const [currentCallings, setCurrentCallings] = useState<string[]>([]);
 
-  // 太客の順序付きリスト
-  // TODO
-  const futokyakus = [
-    "ちゅるり",
-    "motorailgun",
-    "Ryoga.exe",
-    "lapla",
-    "いなにわうどん",
-    "あすと",
-  ];
+  // 太客の順序付きリスト（チップ額の多い順）
+  const [futokyakus, setFutokyakus] = useState<string[]>([]);
 
   useEffect(() => {
     const channel = new BroadcastChannel("yagi-sai-sync");
@@ -87,6 +96,16 @@ export const useSocket = () => {
         const { waitingTime: time } = event.data.payload;
         console.log("WAITING_TIME:", time);
         setWaitingTime(time.toString());
+      } else if (event.data.type === "FUTOKYAKUS") {
+        // 太客一覧の応答
+        const { futokyakus: futokyakuList } = event.data.payload;
+        console.log("FUTOKYAKUS:", futokyakuList);
+        // 空のエントリーを除外してチップ額の多い順に並び替えて名前のみの配列にする
+        const sortedNames = futokyakuList
+          .filter((f) => f.name !== "" && f.tipAmount > 0)
+          .sort((a, b) => b.tipAmount - a.tipAmount)
+          .map((f) => f.name);
+        setFutokyakus(sortedNames);
       }
     };
 
@@ -98,6 +117,9 @@ export const useSocket = () => {
       });
       channel.postMessage({
         type: "REQUEST_WAITING_TIME",
+      });
+      channel.postMessage({
+        type: "REQUEST_FUTOKYAKUS",
       });
     };
     syncWithPOS();

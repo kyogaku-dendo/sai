@@ -214,7 +214,9 @@ const App = () => {
                 <img src={currentFutokyakuAsset} alt="現在の太客" />
               </CurrentFutokyaku>
               <Marquee speed={100}>
-                {futokyakus.join(" ／ ") + "　　――　　"}
+                {futokyakus.length > 0
+                  ? futokyakus.join(" ／ ") + "　　――　　"
+                  : ""}
               </Marquee>
             </FooterContent>
           </Footer>

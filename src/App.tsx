@@ -9,6 +9,7 @@ import futokyakuAsset from "./assets/futokyaku.png";
 import migiAsset from "./assets/migi.png";
 import { useSocket } from "./useSocket";
 import waitingAsset from "./assets/waiting.png";
+import { useScreenshot } from "./useScreenshot";
 
 const width = 1920 * 0.6;
 const height = 1080 * 0.6;
@@ -198,6 +199,7 @@ const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
 
   const { currentCallings, waitingTime, futokyakus } = useSocket();
+  useScreenshot();
 
   const displayFullScreen = () => {
     screenRef.current?.requestFullscreen();
@@ -214,7 +216,7 @@ const App = () => {
     <>
       <Global styles={globalStyle} />
       <div ref={screenRef}>
-        <Wrapper>
+        <Wrapper id="screen">
           <video src="/sai/movie.mp4" autoPlay muted loop />
           <Footer>
             <FooterContent>

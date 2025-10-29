@@ -188,6 +188,7 @@ const FutokyakuList = styled.div`
 `;
 
 const FutokyakuName = styled.div<{ no: number }>`
+  width: ${w(480)};
   line-height: ${h(114)};
   font-size: ${({ no }) => w(70 - no * 10)};
   font-weight: 200;
@@ -200,6 +201,13 @@ const App = () => {
 
   const displayFullScreen = () => {
     screenRef.current?.requestFullscreen();
+  };
+
+  const getStrWidth = (str: string) => {
+    // 英語または半角スペースであれば 0.5em，それ以外は 1em として換算
+    return str.split("").reduce((acc, char) => {
+      return acc + (/^[A-Za-z ]$/.test(char) ? 0.5 : 1);
+    }, 0);
   };
 
   return (
@@ -242,9 +250,10 @@ const App = () => {
           </Waiting>
           <Futokyaku>
             <FutokyakuList>
+              {/* 一定以上の文字数であれば Marquee */}
               {futokyakus.slice(0, 3).map((c, i) => (
                 <FutokyakuName no={i} key={c}>
-                  {c}
+                  {getStrWidth(c) > 7 ? <Marquee speed={100}>{c}</Marquee> : c}
                 </FutokyakuName>
               ))}
             </FutokyakuList>

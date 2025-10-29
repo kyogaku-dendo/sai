@@ -127,8 +127,8 @@ export const useSocket = () => {
     };
     syncWithPOS();
 
-    // 30秒おきに同期
-    const intervalId = setInterval(syncWithPOS, 30000);
+    // 10秒おきに同期
+    const intervalId = setInterval(syncWithPOS, 10000);
 
     return () => {
       channel.removeEventListener("message", handleMessage);

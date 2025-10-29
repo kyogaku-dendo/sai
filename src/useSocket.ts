@@ -91,6 +91,9 @@ export const useSocket = () => {
         const tag = event.data.payload.tag;
         console.log("COMPLETE_PAYMENT:", tag);
         setCurrentCallings((prev) => prev.filter((t) => t !== tag));
+        channel.postMessage({
+          type: "REQUEST_FUTOKYAKUS",
+        });
       } else if (event.data.type === "WAITING_TIME") {
         // 待ち時間の応答
         const { waitingTime: time } = event.data.payload;

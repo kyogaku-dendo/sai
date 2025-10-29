@@ -50,7 +50,8 @@ export const useScreenshot = () => {
     if (intervalId.current) {
       clearInterval(intervalId.current);
     }
-    intervalId.current = setInterval(shareScreenshot, 20000);
+    const INTERVAL_SECONDS = 60;
+    intervalId.current = setInterval(shareScreenshot, INTERVAL_SECONDS * 1000);
 
     return () => {
       if (intervalId.current) {

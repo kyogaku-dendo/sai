@@ -6,19 +6,6 @@ export type FutokyakuDetail = {
   createdAt: string;
 };
 
-interface Calling {
-  tag: string; // 番号
-  createdAt: number; // 作成日時
-}
-
-interface CallingHidden {
-  tag: string; // 番号
-  isCompleted: boolean; // 精算完了の場合，true
-  name?: string; // チップ名
-  tipsAmount?: number; // チップ金額
-  createdAt: number; // 作成日時
-}
-
 interface CallOrdersMessage {
   type: "CALL_ORDERS";
   payload: { tags: string[] };

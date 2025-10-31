@@ -25,12 +25,12 @@ const Content = styled.div`
   display: flex;
   gap: calc(var(--width) / 1920 * 30);
   position: absolute;
-  bottom: calc(var(--width) / 1920 * 40);
+  bottom: calc(var(--width) / 1920 * 44);
 `;
 
 const CurrentFutokyaku = styled.div`
   height: calc(var(--width) / 1920 * 44);
-  margin: calc(var(--width) / 1920 * -8) 0;
+  margin: calc(var(--width) / 1920 * -4) 0;
   padding: calc(var(--width) / 1920 * 8) calc(var(--width) / 1920 * 12);
   border-radius: calc(var(--width) / 1920 * 4);
   background: #ffcc00;
@@ -47,6 +47,9 @@ interface FooterProps {
 }
 
 const Footer = ({ futokyakus }: FooterProps) => {
+  const futokyakuWaitingText =
+    "チップをいただいたみなさまのお名前をこちらに掲示いたします";
+
   return (
     <Wrapper>
       <Content>
@@ -54,7 +57,9 @@ const Footer = ({ futokyakus }: FooterProps) => {
           <img src={currentFutokyakuAsset} alt="現在の太客" />
         </CurrentFutokyaku>
         <Marquee speed={100}>
-          {futokyakus.length > 0 ? futokyakus.join(" ／ ") + "　　――　　" : ""}
+          {futokyakus.length > 0
+            ? futokyakus.join(" ／ ") + "　　――　　"
+            : futokyakuWaitingText}
         </Marquee>
       </Content>
     </Wrapper>

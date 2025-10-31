@@ -10,32 +10,31 @@ import futokyakuAsset from "../assets/futokyaku.png";
 import waitingAsset from "../assets/waiting.png";
 import { useScreenshot } from "../useScreenshot";
 import { useSocket } from "../useSocket";
-import { height, width } from "../utils";
 
 const globalStyle = css`
   @font-face {
     font-family: "ShinGo";
     font-weight: 700;
-    src: url("/AP-OTF-ShinGoPr6N-Bold.otf") format("opentype");
+    src: url("/sai/AP-OTF-ShinGoPr6N-Bold.otf") format("opentype");
   }
   @font-face {
     font-family: "ShinGo";
     font-weight: 500;
-    src: url("/AP-OTF-ShinGoPr6N-Medium.otf") format("opentype");
+    src: url("/sai/AP-OTF-ShinGoPr6N-Medium.otf") format("opentype");
   }
   @font-face {
     font-family: "ShinGo";
     font-weight: 200;
-    src: url("/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
+    src: url("/sai/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
   }
   @font-face {
     font-family: "Montserrat";
-    src: url("/Montserrat-VariableFont_wght.ttf") format("truetype");
+    src: url("/sai/Montserrat-VariableFont_wght.ttf") format("truetype");
   }
 
   :root {
-    --width: ${width}px;
-    --height: ${height}px;
+    --width: ${screen.width}px;
+    --height: ${screen.height}px;
   }
 `;
 

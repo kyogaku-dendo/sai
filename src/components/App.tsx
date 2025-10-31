@@ -79,6 +79,23 @@ const WaitingMinutes = styled.div`
   left: calc(var(--width) / 1920 * 50);
 `;
 
+const Soneki = styled.div`
+  width: calc(var(--width) / 1920 * 300);
+  line-height: 2.4;
+  color: #000;
+  font-family: Gotham;
+  font-size: calc(var(--width) / 1920 * 70);
+  font-weight: 600;
+  position: absolute;
+  top: calc(var(--width) / 1920 * 100);
+  left: calc(var(--width) / 1920 * 540);
+`;
+
+const Yen = styled.span`
+  font-size: calc(var(--width) / 1920 * 30);
+  margin-left: calc(var(--width) / 1920 * 5);
+`;
+
 const Futokyaku = styled.div`
   width: calc(var(--width) / 1920 * 712);
   height: calc(var(--width) / 1920 * 347);
@@ -109,7 +126,13 @@ const FutokyakuName = styled.div<{ no: number }>`
 const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
 
-  const { currentCallings, waitingTime, futokyakus } = useSocket();
+  const {
+    currentCallings,
+    waitingTime,
+    sonekiGoal,
+    sonekiCurrent,
+    futokyakus,
+  } = useSocket();
   useScreenshot();
 
   const displayFullScreen = () => {
@@ -132,6 +155,13 @@ const App = () => {
           <Right currentCallings={currentCallings} />
           <Waiting>
             <WaitingMinutes>{waitingTime}</WaitingMinutes>
+            <Soneki>
+              {sonekiGoal ?? "?????"}
+              <Yen>円</Yen>
+              <br />
+              {sonekiCurrent ?? "?????"}
+              <Yen>円</Yen>
+            </Soneki>
           </Waiting>
           <Futokyaku>
             <FutokyakuList>

@@ -54,6 +54,10 @@ export const useSocket = () => {
   // 現在呼び出し中の番号
   const [currentCallings, setCurrentCallings] = useState<string[]>([]);
 
+  // 損益分岐点
+  const [sonekiGoal, setSonekiGoal] = useState<number | null>(null);
+  const [sonekiCurrent, setSonekiCurrent] = useState<number | null>(null);
+
   // 太客の順序付きリスト（チップ額の多い順）
   const [futokyakus, setFutokyakus] = useState<string[]>([]);
 
@@ -124,5 +128,36 @@ export const useSocket = () => {
     };
   }, []);
 
-  return { currentCallings, waitingTime, futokyakus };
+  useEffect(() => {
+    const syncSoneki = async () => {
+      try {
+        const response = await fetch(
+          "https://sora.workers.yukari.uk/api/v0/earning"
+        );
+        const data = await response.json();
+        setSonekiGoal(data.border);
+        setSonekiCurrent(data.current);
+      } catch (error) {
+        setSonekiGoal(null);
+        setSonekiCurrent(null);
+        console.error(error);
+      }
+    };
+    syncSoneki();
+
+    // 10秒おきに同期
+    const intervalId = setInterval(syncSoneki, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  return {
+    currentCallings,
+    waitingTime,
+    sonekiGoal,
+    sonekiCurrent,
+    futokyakus,
+  };
 };

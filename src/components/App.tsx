@@ -123,6 +123,18 @@ const FutokyakuName = styled.div<{ no: number }>`
   font-weight: 200;
 `;
 
+const CurrentTime = styled.div`
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
+    rgba(0, 0, 0, 0.5);
+  font-family: Gotham;
+  font-size: calc(var(--width) / 1920 * 40);
+  position: absolute;
+  top: calc(var(--width) / 1920 * 380);
+  left: calc(var(--width) / 1920 * 40);
+`;
+
 const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
 
@@ -145,6 +157,14 @@ const App = () => {
       return acc + (/^[A-Za-z ]$/.test(char) ? 0.5 : 1);
     }, 0);
   };
+
+  const currentTime = new Date().toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <>
@@ -177,6 +197,7 @@ const App = () => {
               ))}
             </FutokyakuList>
           </Futokyaku>
+          <CurrentTime>{currentTime}</CurrentTime>
           <Footer futokyakus={futokyakus} />
         </Wrapper>
       </div>

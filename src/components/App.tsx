@@ -113,13 +113,23 @@ const Futokyaku = styled.div`
 const FutokyakuList = styled.div`
   position: absolute;
   top: calc(var(--width) / 1920 * 6);
-  left: calc(var(--width) / 1920 * 200);
+  left: calc(var(--width) / 1920 * 100);
 `;
 
-const FutokyakuName = styled.div<{ no: number }>`
-  width: calc(var(--width) / 1920 * 480);
+const FutokyakuItem = styled.div<{ no: number }>`
   line-height: calc(var(--width) / 1920 * 114);
   font-size: ${({ no }) => `calc(var(--width) / 1920 * ${70 - no * 10})`};
+  display: flex;
+  align-items: center;
+  gap: calc(var(--width) / 1920 * 10);
+`;
+
+const FutokyakuNo = styled.div`
+  width: calc(var(--width) / 1920 * 80);
+`;
+
+const FutokyakuName = styled.div`
+  width: calc(var(--width) / 1920 * 480);
   font-weight: 200;
 `;
 
@@ -186,14 +196,17 @@ const App = () => {
           <Futokyaku>
             <FutokyakuList>
               {/* 一定以上の文字数であれば Marquee */}
-              {futokyakus.slice(0, 3).map((c, i) => (
-                <FutokyakuName no={i} key={c}>
-                  {getStrWidth(c) > 7 ? (
-                    <Marquee speed={100}>{c}　</Marquee>
-                  ) : (
-                    c
-                  )}
-                </FutokyakuName>
+              {futokyakus.slice(0, 3).map((f) => (
+                <FutokyakuItem no={f.no} key={f.no + " " + f.name}>
+                  <FutokyakuNo>{f.no}.</FutokyakuNo>
+                  <FutokyakuName>
+                    {getStrWidth(f.name) > 7 ? (
+                      <Marquee speed={100}>{f.name}　</Marquee>
+                    ) : (
+                      f.name
+                    )}
+                  </FutokyakuName>
+                </FutokyakuItem>
               ))}
             </FutokyakuList>
           </Futokyaku>

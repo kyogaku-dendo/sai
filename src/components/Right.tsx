@@ -53,6 +53,8 @@ const CallingItem = styled.div<{ scale: number }>`
   font-size: calc(var(--width) / 1920 * 70 * ${({ scale }) => scale});
   font-weight: 600;
   padding: calc(var(--width) / 1920 * 18 * ${({ scale }) => scale})
+    calc(var(--width) / 1920 * 8 * ${({ scale }) => scale})
+    calc(var(--width) / 1920 * 10 * ${({ scale }) => scale})
     calc(var(--width) / 1920 * 8 * ${({ scale }) => scale});
   border-radius: calc(var(--width) / 1920 * 8 * ${({ scale }) => scale});
   box-shadow: 0 calc(var(--width) / 1920 * 4) calc(var(--width) / 1920 * 6)

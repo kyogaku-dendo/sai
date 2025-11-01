@@ -28,8 +28,8 @@ const globalStyle = css`
     src: url("/sai/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
   }
   @font-face {
-    font-family: "Montserrat";
-    src: url("/sai/Montserrat-VariableFont_wght.ttf") format("truetype");
+    font-family: "Gotham";
+    src: url("/sai/Gotham-Medium.otf") format("opentype");
   }
 
   :root {
@@ -75,7 +75,7 @@ const WaitingMinutes = styled.div`
   font-weight: 700;
   font-family: "Gotham";
   position: absolute;
-  top: calc(var(--width) / 1920 * 25);
+  top: calc(var(--width) / 1920 * 45);
   left: calc(var(--width) / 1920 * 50);
 `;
 
@@ -87,7 +87,7 @@ const Soneki = styled.div`
   font-size: calc(var(--width) / 1920 * 70);
   font-weight: 600;
   position: absolute;
-  top: calc(var(--width) / 1920 * 100);
+  top: calc(var(--width) / 1920 * 105);
   left: calc(var(--width) / 1920 * 540);
 `;
 

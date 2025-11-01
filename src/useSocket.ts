@@ -38,6 +38,10 @@ interface FutokyakusMessage {
   payload: { futokyakus: FutokyakuDetail[] };
 }
 
+interface FutokyakuUpdatedMessage {
+  type: "FUTOKYAKU_UPDATED";
+}
+
 type PostMessageEvent =
   | CallOrdersMessage
   | CompletePaymentMessage
@@ -45,7 +49,8 @@ type PostMessageEvent =
   | RequestWaitingTimeMessage
   | WaitingTimeMessage
   | RequestFutokyakusMessage
-  | FutokyakusMessage;
+  | FutokyakusMessage
+  | FutokyakuUpdatedMessage;
 
 export const useSocket = () => {
   // 待ち時間
@@ -100,6 +105,10 @@ export const useSocket = () => {
           .sort((a, b) => b.tipAmount - a.tipAmount)
           .map((f) => f.name);
         setFutokyakus(sortedNames);
+      } else if (event.data.type === "FUTOKYAKU_UPDATED") {
+        channel.postMessage({
+          type: "REQUEST_FUTOKYAKUS",
+        });
       }
     };
 

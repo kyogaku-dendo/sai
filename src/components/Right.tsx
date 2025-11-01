@@ -66,7 +66,7 @@ const Yoron = styled.div`
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 2) calc(var(--width) / 1920 * 6)
     rgba(0, 0, 0, 0.5);
-  padding: calc(var(--width) / 1920 * 16) calc(var(--width) / 1920 * 30)
+  padding: calc(var(--width) / 1920 * 15) calc(var(--width) / 1920 * 30)
     calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 10);
   box-sizing: border-box;
 `;
@@ -75,17 +75,17 @@ const YoronHeader = styled.img`
   width: 90%;
   text-align: center;
   margin-left: 5%;
-  margin-bottom: calc(var(--width) / 1920 * 24);
+  margin-bottom: calc(var(--width) / 1920 * 25);
 `;
 
 const YoronFooter = styled.img`
   width: 100%;
-  margin-top: calc(var(--width) / 1920 * 25);
+  margin-top: calc(var(--width) / 1920 * 20);
 `;
 
 const YoronItem = styled.div`
-  height: calc(var(--width) / 1920 * 80);
-  margin-bottom: calc(var(--width) / 1920 * 6);
+  height: calc(var(--width) / 1920 * 65);
+  margin-bottom: calc(var(--width) / 1920 * 10);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -102,8 +102,8 @@ const YoronTitle = styled.div<{ small: boolean }>`
 
 const YoronGraph = styled.div`
   width: 60%;
-  height: calc(var(--width) / 1920 * 70);
-  line-height: calc(var(--width) / 1920 * 70);
+  height: 100%;
+  line-height: calc(var(--width) / 1920 * 65);
   text-align: center;
   font-size: calc(var(--width) / 1920 * 40);
   display: flex;

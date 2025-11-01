@@ -27,7 +27,7 @@ const Content = styled.div`
   height: 100%;
   padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 260)
     calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 30);
-  border-top: solid 14px #0959cc;
+  border-top: solid calc(var(--width) / 1920 * 25) #0959cc;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -101,7 +101,7 @@ const YoronTitle = styled.div<{ small: boolean }>`
 `;
 
 const YoronGraph = styled.div`
-  width: 50%;
+  width: 60%;
   height: calc(var(--width) / 1920 * 70);
   line-height: calc(var(--width) / 1920 * 70);
   text-align: center;

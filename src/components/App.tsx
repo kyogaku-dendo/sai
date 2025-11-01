@@ -112,7 +112,7 @@ const Futokyaku = styled.div`
 
 const FutokyakuList = styled.div`
   position: absolute;
-  top: calc(var(--width) / 1920 * 44);
+  top: calc(var(--width) / 1920 * 6);
   left: calc(var(--width) / 1920 * 200);
 `;
 
@@ -168,7 +168,11 @@ const App = () => {
               {/* 一定以上の文字数であれば Marquee */}
               {futokyakus.slice(0, 3).map((c, i) => (
                 <FutokyakuName no={i} key={c}>
-                  {getStrWidth(c) > 7 ? <Marquee speed={100}>{c}</Marquee> : c}
+                  {getStrWidth(c) > 7 ? (
+                    <Marquee speed={100}>{c}　</Marquee>
+                  ) : (
+                    c
+                  )}
                 </FutokyakuName>
               ))}
             </FutokyakuList>

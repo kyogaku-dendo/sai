@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 const Content = styled.div`
   width: calc(var(--width) / 1920 * 1000);
   height: 100%;
-  padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 260)
+  padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 290)
     calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 30);
   border-top: solid calc(var(--width) / 1920 * 25) #0959cc;
   box-sizing: border-box;
@@ -41,8 +41,8 @@ const CallingList = styled.div`
   gap: calc(var(--width) / 1920 * 14) calc(var(--width) / 1920 * 14);
 `;
 
-const CallingItem = styled.div`
-  flex: calc(var(--width) / 1920 * 150) 0 0;
+const CallingItem = styled.div<{ scale: number }>`
+  flex: calc(var(--width) / 1920 * 140 * ${({ scale }) => scale}) 0 0;
   color: #000;
   line-height: 0.85;
   text-align: center;
@@ -50,10 +50,11 @@ const CallingItem = styled.div`
       rgba(255, 255, 255, 1),
     0 0 calc(var(--width) / 1920 * 20) rgba(255, 255, 255, 0.8);
   font-family: Gotham;
-  font-size: calc(var(--width) / 1920 * 80);
+  font-size: calc(var(--width) / 1920 * 70 * ${({ scale }) => scale});
   font-weight: 600;
-  padding: calc(var(--width) / 1920 * 18) calc(var(--width) / 1920 * 8);
-  border-radius: calc(var(--width) / 1920 * 8);
+  padding: calc(var(--width) / 1920 * 18 * ${({ scale }) => scale})
+    calc(var(--width) / 1920 * 8 * ${({ scale }) => scale});
+  border-radius: calc(var(--width) / 1920 * 8 * ${({ scale }) => scale});
   box-shadow: 0 calc(var(--width) / 1920 * 4) calc(var(--width) / 1920 * 6)
     rgba(0, 0, 0, 0.5);
   background: hsl(45, 100%, 90%);
@@ -66,8 +67,8 @@ const Yoron = styled.div`
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 2) calc(var(--width) / 1920 * 6)
     rgba(0, 0, 0, 0.5);
-  padding: calc(var(--width) / 1920 * 15) calc(var(--width) / 1920 * 30)
-    calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 10);
+  padding: calc(var(--width) / 1920 * 15) 0 calc(var(--width) / 1920 * 20)
+    calc(var(--width) / 1920 * 10);
   box-sizing: border-box;
 `;
 
@@ -127,6 +128,17 @@ interface RightProps {
 const Right = ({ currentCallings }: RightProps) => {
   const { imiResults } = useImi();
 
+  let callingScale: number;
+  if (currentCallings.length > 18) {
+    callingScale = 1.0;
+  } else if (currentCallings.length > 12) {
+    callingScale = 1.25;
+  } else if (currentCallings.length > 8) {
+    callingScale = 1.5;
+  } else {
+    callingScale = 2.0;
+  }
+
   return (
     <Wrapper>
       <img
@@ -137,7 +149,9 @@ const Right = ({ currentCallings }: RightProps) => {
         {currentCallings.length > 0 ? (
           <CallingList>
             {currentCallings.map((c) => (
-              <CallingItem key={c}>{c}</CallingItem>
+              <CallingItem key={c} scale={callingScale}>
+                {c}
+              </CallingItem>
             ))}
           </CallingList>
         ) : (

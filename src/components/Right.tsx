@@ -1,6 +1,9 @@
 import styled from "@emotion/styled";
 
 import migiAsset from "../assets/migi.png";
+import yoronFooterAsset from "../assets/yoron-footer.png";
+import yoronHeaderAsset from "../assets/yoron-header.png";
+import { useImi } from "../useImi";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -10,7 +13,7 @@ const Wrapper = styled.div`
   right: 0;
   z-index: 50;
 
-  img {
+  > img {
     height: 100%;
     position: absolute;
     top: 0;
@@ -22,9 +25,9 @@ const Wrapper = styled.div`
 const Content = styled.div`
   width: calc(var(--width) / 1920 * 1000);
   height: 100%;
-  padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 240)
+  padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 260)
     calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 30);
-  border-top: solid 14px #0959cc;
+  border-top: solid calc(var(--width) / 1920 * 25) #0959cc;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -57,11 +60,73 @@ const CallingItem = styled.div`
   display: inline-block;
 `;
 
+const Yoron = styled.div`
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  text-shadow: 0 calc(var(--width) / 1920 * 2) calc(var(--width) / 1920 * 6)
+    rgba(0, 0, 0, 0.5);
+  padding: calc(var(--width) / 1920 * 16) calc(var(--width) / 1920 * 30)
+    calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 10);
+  box-sizing: border-box;
+`;
+
+const YoronHeader = styled.img`
+  width: 90%;
+  text-align: center;
+  margin-left: 5%;
+  margin-bottom: calc(var(--width) / 1920 * 24);
+`;
+
+const YoronFooter = styled.img`
+  width: 100%;
+  margin-top: calc(var(--width) / 1920 * 25);
+`;
+
+const YoronItem = styled.div`
+  height: calc(var(--width) / 1920 * 80);
+  margin-bottom: calc(var(--width) / 1920 * 6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const YoronTitle = styled.div<{ small: boolean }>`
+  width: 45%;
+  line-height: 1;
+  font-size: calc(var(--width) / 1920 * ${({ small }) => (small ? 25 : 40)});
+  font-weight: 600;
+  margin-bottom: calc(var(--width) / 1920 * 10);
+  word-break: auto-phrase;
+`;
+
+const YoronGraph = styled.div`
+  width: 60%;
+  height: calc(var(--width) / 1920 * 70);
+  line-height: calc(var(--width) / 1920 * 70);
+  text-align: center;
+  font-size: calc(var(--width) / 1920 * 40);
+  display: flex;
+  background: rgba(0, 0, 0, 0.5);
+`;
+
+const Yoronmeaningful = styled.div`
+  height: 100%;
+  background: #ffcc00;
+`;
+
+const YoronMeaningless = styled.div`
+  height: 100%;
+  background: #0048a9;
+`;
+
 interface RightProps {
   currentCallings: string[];
 }
 
 const Right = ({ currentCallings }: RightProps) => {
+  const { imiResults } = useImi();
+
   return (
     <Wrapper>
       <img
@@ -76,7 +141,46 @@ const Right = ({ currentCallings }: RightProps) => {
             ))}
           </CallingList>
         ) : (
-          <>TODO: なにかを出す</>
+          <Yoron>
+            <YoronHeader src={yoronHeaderAsset} alt="んぽたそ世論調査" />
+            <div>
+              {imiResults.map((result) => (
+                <YoronItem>
+                  <YoronTitle small={result.id === 7}>
+                    {result.title}
+                  </YoronTitle>
+                  <YoronGraph>
+                    <Yoronmeaningful
+                      style={{
+                        flexBasis:
+                          (result.meaningful /
+                            (result.meaningful + result.meaningless)) *
+                            100 +
+                          "%",
+                      }}
+                    >
+                      {result.meaningful}
+                    </Yoronmeaningful>
+                    <YoronMeaningless
+                      style={{
+                        flexBasis:
+                          (result.meaningless /
+                            (result.meaningful + result.meaningless)) *
+                            100 +
+                          "%",
+                      }}
+                    >
+                      {result.meaningless}
+                    </YoronMeaningless>
+                  </YoronGraph>
+                </YoronItem>
+              ))}
+            </div>
+            <YoronFooter
+              src={yoronFooterAsset}
+              alt="投票は以下のサイトから！ https://imi.lapla.workers.dev"
+            />
+          </Yoron>
         )}
       </Content>
     </Wrapper>

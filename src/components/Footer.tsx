@@ -43,7 +43,7 @@ const CurrentFutokyaku = styled.div`
 `;
 
 interface FooterProps {
-  futokyakus: string[];
+  futokyakus: { no: number; name: string }[];
 }
 
 const Footer = ({ futokyakus }: FooterProps) => {
@@ -58,7 +58,7 @@ const Footer = ({ futokyakus }: FooterProps) => {
         </CurrentFutokyaku>
         <Marquee speed={100}>
           {futokyakus.length > 0
-            ? futokyakus.join(" ／ ") + "　　――　　"
+            ? futokyakus.map((f) => f.name).join(" ／ ") + "　　――　　"
             : futokyakuWaitingText}
         </Marquee>
       </Content>

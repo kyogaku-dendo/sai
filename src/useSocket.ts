@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type FutokyakuDetail = {
   name: string;
   tipAmount: number;
   createdAt: string;
+  expiresAt: string;
 };
 
 interface CallOrdersMessage {
@@ -52,6 +53,27 @@ type PostMessageEvent =
   | FutokyakusMessage
   | FutokyakuUpdatedMessage;
 
+/*const mockOriginalFutokyakus = [
+  {
+    name: "Slimalized777",
+    tipAmount: 10000,
+    createdAt: "2025-01-01 12:00:00",
+    expiresAt: "2025-01-01 10:00:00",
+  },
+  {
+    name: "Slimalized999",
+    tipAmount: 15000,
+    createdAt: "2025-01-01 15:00:00",
+    expiresAt: "2025-01-01 10:00:00",
+  },
+  {
+    name: "Slimalized222",
+    tipAmount: 500,
+    createdAt: "2025-01-01 10:00:00",
+    expiresAt: "2025-01-01 10:00:00",
+  },
+];*/
+
 export const useSocket = () => {
   // 待ち時間
   const [waitingTime, setWaitingTime] = useState<string>("--");
@@ -63,8 +85,36 @@ export const useSocket = () => {
   const [sonekiGoal, setSonekiGoal] = useState<number | null>(null);
   const [sonekiCurrent, setSonekiCurrent] = useState<number | null>(null);
 
-  // 太客の順序付きリスト（チップ額の多い順）
-  const [futokyakus, setFutokyakus] = useState<string[]>([]);
+  // 太客データ
+  const [originalFutokyakus, setOriginalFutokyakus] = useState<
+    FutokyakuDetail[]
+  >([]);
+
+  // 太客データ（チップ額の多い順．チップ額が同額の場合は，登録日時が新しい順）
+  const futokyakus = useMemo(() => {
+    // 空のエントリーを除外
+    const sorted = originalFutokyakus
+      .filter((f) => f.name !== "" && f.tipAmount > 0)
+      .sort((a, b) =>
+        b.tipAmount === a.tipAmount
+          ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          : b.tipAmount - a.tipAmount
+      );
+
+    // 順位付け（同額は同順位）
+    let lastTip: number | null = null;
+    let lastRank = 0;
+    const result = sorted.map((f, i) => {
+      if (f.tipAmount !== lastTip) {
+        // 新しい金額が出たら順位を更新
+        lastRank = i + 1;
+        lastTip = f.tipAmount;
+      }
+      return { no: lastRank, name: f.name };
+    });
+
+    return result;
+  }, [originalFutokyakus]);
 
   useEffect(() => {
     const channel = new BroadcastChannel("yagi-sai-sync");
@@ -99,12 +149,7 @@ export const useSocket = () => {
         // 太客一覧の応答
         const { futokyakus: futokyakuList } = event.data.payload;
         console.log("FUTOKYAKUS:", futokyakuList);
-        // 空のエントリーを除外してチップ額の多い順に並び替えて名前のみの配列にする
-        const sortedNames = futokyakuList
-          .filter((f) => f.name !== "" && f.tipAmount > 0)
-          .sort((a, b) => b.tipAmount - a.tipAmount)
-          .map((f) => f.name);
-        setFutokyakus(sortedNames);
+        setOriginalFutokyakus(futokyakuList);
       } else if (event.data.type === "FUTOKYAKU_UPDATED") {
         channel.postMessage({
           type: "REQUEST_FUTOKYAKUS",

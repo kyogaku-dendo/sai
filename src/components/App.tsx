@@ -112,15 +112,37 @@ const Futokyaku = styled.div`
 
 const FutokyakuList = styled.div`
   position: absolute;
-  top: calc(var(--width) / 1920 * 44);
-  left: calc(var(--width) / 1920 * 200);
+  top: calc(var(--width) / 1920 * 6);
+  left: calc(var(--width) / 1920 * 100);
 `;
 
-const FutokyakuName = styled.div<{ no: number }>`
-  width: calc(var(--width) / 1920 * 480);
+const FutokyakuItem = styled.div<{ no: number }>`
   line-height: calc(var(--width) / 1920 * 114);
   font-size: ${({ no }) => `calc(var(--width) / 1920 * ${70 - no * 10})`};
+  display: flex;
+  align-items: center;
+  gap: calc(var(--width) / 1920 * 10);
+`;
+
+const FutokyakuNo = styled.div`
+  width: calc(var(--width) / 1920 * 80);
+`;
+
+const FutokyakuName = styled.div`
+  width: calc(var(--width) / 1920 * 480);
   font-weight: 200;
+`;
+
+const CurrentTime = styled.div`
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
+    rgba(0, 0, 0, 0.5);
+  font-family: Gotham;
+  font-size: calc(var(--width) / 1920 * 40);
+  position: absolute;
+  top: calc(var(--width) / 1920 * 380);
+  left: calc(var(--width) / 1920 * 40);
 `;
 
 const App = () => {
@@ -146,6 +168,14 @@ const App = () => {
     }, 0);
   };
 
+  const currentTime = new Date().toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
     <>
       <Global styles={globalStyle} />
@@ -166,13 +196,21 @@ const App = () => {
           <Futokyaku>
             <FutokyakuList>
               {/* 一定以上の文字数であれば Marquee */}
-              {futokyakus.slice(0, 3).map((c, i) => (
-                <FutokyakuName no={i} key={c}>
-                  {getStrWidth(c) > 7 ? <Marquee speed={100}>{c}</Marquee> : c}
-                </FutokyakuName>
+              {futokyakus.slice(0, 3).map((f) => (
+                <FutokyakuItem no={f.no} key={f.no + " " + f.name}>
+                  <FutokyakuNo>{f.no}.</FutokyakuNo>
+                  <FutokyakuName>
+                    {getStrWidth(f.name) > 7 ? (
+                      <Marquee speed={100}>{f.name}　</Marquee>
+                    ) : (
+                      f.name
+                    )}
+                  </FutokyakuName>
+                </FutokyakuItem>
               ))}
             </FutokyakuList>
           </Futokyaku>
+          <CurrentTime>{currentTime}</CurrentTime>
           <Footer futokyakus={futokyakus} />
         </Wrapper>
       </div>

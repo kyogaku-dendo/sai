@@ -39,6 +39,10 @@ interface FutokyakusMessage {
   payload: { futokyakus: FutokyakuDetail[] };
 }
 
+interface FutokyakuUpdatedMessage {
+  type: "FUTOKYAKU_UPDATED";
+}
+
 type PostMessageEvent =
   | CallOrdersMessage
   | CompletePaymentMessage
@@ -46,7 +50,8 @@ type PostMessageEvent =
   | RequestWaitingTimeMessage
   | WaitingTimeMessage
   | RequestFutokyakusMessage
-  | FutokyakusMessage;
+  | FutokyakusMessage
+  | FutokyakuUpdatedMessage;
 
 /*const mockOriginalFutokyakus = [
   {
@@ -145,6 +150,10 @@ export const useSocket = () => {
         const { futokyakus: futokyakuList } = event.data.payload;
         console.log("FUTOKYAKUS:", futokyakuList);
         setOriginalFutokyakus(futokyakuList);
+      } else if (event.data.type === "FUTOKYAKU_UPDATED") {
+        channel.postMessage({
+          type: "REQUEST_FUTOKYAKUS",
+        });
       }
     };
 

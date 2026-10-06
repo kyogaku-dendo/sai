@@ -7,7 +7,7 @@ import Right from "./Right";
 
 import waitingAsset from "../assets/waiting.png";
 import { useScreenshot } from "../useScreenshot";
-import { useSocket } from "../useSocket";
+import { type SalesSummary, useSalesSummary } from "../useSalesSummary";
 
 const globalStyle = css`
   @font-face {
@@ -95,8 +95,20 @@ const CurrentTime = styled.div`
   left: calc(var(--width) / 1920 * 40);
 `;
 
-const formatCurrentTime = () =>
-  new Date().toLocaleString("ja-JP", {
+const StaleNote = styled.div`
+  margin-top: calc(var(--width) / 1920 * 12);
+  font-size: calc(var(--width) / 1920 * 26);
+  font-family: "ShinGo";
+`;
+
+// hato の同期は 2 秒おきなので、これより古ければ会場の回線か Square への接続が切れている
+const STALE_AFTER_MS = 60 * 1000;
+
+const formatYen = (yen: number | null | undefined) =>
+  yen === null || yen === undefined ? "?????" : yen.toLocaleString("ja-JP");
+
+const formatCurrentTime = (ms: number) =>
+  new Date(ms).toLocaleString("ja-JP", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -105,25 +117,39 @@ const formatCurrentTime = () =>
   });
 
 // 以前は POS からの同期で画面が数秒おきに描き直され、そのついでに時計が進んでいた。
-// 同期がなくなったので、時計は自分で進める
-const Clock = () => {
-  const [currentTime, setCurrentTime] = useState(formatCurrentTime);
+// 同期がなくなったので、時計は自分で進める。売上の古さも毎秒判定し直す
+const Clock = ({ lastSyncedAt }: { lastSyncedAt: string | null }) => {
+  const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
-    const intervalId = setInterval(
-      () => setCurrentTime(formatCurrentTime()),
-      1000
-    );
+    const intervalId = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(intervalId);
   }, []);
 
-  return <CurrentTime>{currentTime}</CurrentTime>;
+  const syncedAtMs = lastSyncedAt ? Date.parse(lastSyncedAt) : null;
+  const isStale = syncedAtMs === null || now - syncedAtMs > STALE_AFTER_MS;
+
+  return (
+    <CurrentTime>
+      {formatCurrentTime(now)}
+      {isStale && (
+        <StaleNote>
+          {syncedAtMs === null
+            ? "売上を読み込み中"
+            : `売上は ${new Date(syncedAtMs).toLocaleTimeString("ja-JP", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })} 時点`}
+        </StaleNote>
+      )}
+    </CurrentTime>
+  );
 };
 
 const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
 
-  const { sonekiGoal, sonekiCurrent } = useSocket();
+  const summary: SalesSummary | null = useSalesSummary();
   useScreenshot();
 
   const displayFullScreen = () => {
@@ -139,15 +165,15 @@ const App = () => {
           <Right />
           <SonekiPanel>
             <Soneki>
-              {sonekiGoal ?? "?????"}
+              {formatYen(summary?.borderYen)}
               <Yen>円</Yen>
               <br />
-              {sonekiCurrent ?? "?????"}
+              {formatYen(summary?.salesYen)}
               <Yen>円</Yen>
             </Soneki>
           </SonekiPanel>
-          <Clock />
-          <Footer />
+          <Clock lastSyncedAt={summary?.lastSyncedAt ?? null} />
+          <Footer summary={summary} />
         </Wrapper>
       </div>
       <button onClick={displayFullScreen}>フルスクリーン</button>

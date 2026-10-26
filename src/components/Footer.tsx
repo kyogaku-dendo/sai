@@ -31,9 +31,16 @@ const Content = styled.div`
 const WELCOME_TEXT = "驚額の殿堂ファイナルへようこそ";
 const GAP = "\u3000";
 
+const jstDate = (now: Date) =>
+  new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo" }).format(now);
+
 const describeSales = (summary: SalesSummary | null) => {
-  if (!summary || summary.items.length === 0) return WELCOME_TEXT;
-  const items = summary.items
+  // 回線断の間は前日の値が残っていることがあるので、日付が今日のものだけを出す
+  const today = summary?.today;
+  if (!today || today.date !== jstDate(new Date()) || today.items.length === 0) {
+    return WELCOME_TEXT;
+  }
+  const items = today.items
     .map((item) => {
       const name = item.variationName
         ? `${item.name}（${item.variationName}）`
@@ -41,7 +48,7 @@ const describeSales = (summary: SalesSummary | null) => {
       return `${name} ${item.quantity.toLocaleString("ja-JP")}`;
     })
     .join(" ／ ");
-  const count = summary.paymentsCount.toLocaleString("ja-JP");
+  const count = today.paymentsCount.toLocaleString("ja-JP");
   return `本日の販売数${GAP}${items}${GAP}――${GAP}お会計 ${count} 件${GAP}――${GAP}`;
 };
 

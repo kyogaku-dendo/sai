@@ -7,6 +7,14 @@ export type SalesSummary = {
   paymentsCount: number;
   byMethod: { cash: number; cashless: number };
   items: { name: string; variationName: string | null; quantity: number }[];
+  /** 当日（日本時間）の分。上の値は SALES_FROM からの累計。古い hato の値が localStorage に残っていると無い */
+  today?: {
+    /** 日本時間の日付（YYYY-MM-DD） */
+    date: string;
+    salesYen: number;
+    paymentsCount: number;
+    items: { name: string; variationName: string | null; quantity: number }[];
+  };
   lastSyncedAt: string | null;
 };
 

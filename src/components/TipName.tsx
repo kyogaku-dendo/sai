@@ -1,11 +1,10 @@
 import styled from "@emotion/styled";
 
-// 黒塗りの帯。地が濃い色でも黒が沈まないよう、縁を付ける
+// 黒塗りの帯。縁は付けず、書類の黒塗りと同じく黒一色にする
 const Redacted = styled.span`
   display: inline-block;
   height: 1em;
   background: #000;
-  outline: solid calc(var(--width) / 1920 * 2) rgba(255, 255, 255, 0.7);
   vertical-align: -0.1em;
 `;
 

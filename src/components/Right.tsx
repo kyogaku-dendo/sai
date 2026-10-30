@@ -14,10 +14,10 @@ const Wrapper = styled.div`
 `;
 
 const Content = styled.div`
-  width: calc(var(--width) / 100 * 50);
+  width: calc(var(--height) / 100 * 75);
   height: 100%;
-  padding: calc(var(--height) / 100 * 2.0) calc(var(--width) / 100 * 2);
-  border-top: solid calc(var(--width) / 1920 * 25) #0959cc;
+  padding: calc(var(--height) / 100 * 2.5) calc(var(--height) / 100 * 3);
+  border-top: solid calc(var(--height) / 100 * 2) #0959cc;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -31,8 +31,6 @@ const Yoron = styled.div`
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 2) calc(var(--width) / 1920 * 6)
     rgba(0, 0, 0, 0.5);
-  padding: calc(var(--width) / 1920 * 15) 0 calc(var(--width) / 1920 * 20)
-    calc(var(--width) / 1920 * 10);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -41,14 +39,14 @@ const Yoron = styled.div`
 const YoronHeader = styled.img`
   width: 95%;
   margin: auto;
-  margin-bottom: calc(var(--height) / 100 * 3.5);
+  margin-bottom: calc(var(--height) / 100 * 3);
   flex-shrink: 0;
 `;
 
 const YoronFooter = styled.img`
   width: 100%;
   margin-top: calc(var(--height) / 100 * 3);
-  margin-bottom: calc(var(--height) / 100 * -9.5);
+  margin-bottom: calc(var(--height) / 100 * -8.5);
   flex-shrink: 0;
 `;
 
@@ -58,7 +56,7 @@ const YoronList = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: calc(var(--width) / 100 * 0.5);
+  gap: calc(var(--height) / 100 * 0.7);
 `;
 
 const YoronItem = styled.div`
@@ -71,9 +69,8 @@ const YoronItem = styled.div`
 const YoronTitle = styled.div<{ small: boolean }>`
   width: 55%;
   line-height: 1;
-  font-size: calc(var(--width) / 1920 * ${({ small }) => (small ? 25 : 40)});
+  font-size: calc(var(--height) / 100 * 3);
   font-weight: 600;
-  margin-bottom: calc(var(--width) / 1920 * 10);
   word-break: auto-phrase;
 `;
 
@@ -81,7 +78,7 @@ const YoronGraph = styled.div`
   width: 60%;
   height: 100%;
   line-height: 1;
-  font-size: calc(var(--width) / 1920 * 40);
+  font-size: calc(var(--height) / 100 * 3.5);
   display: flex;
   background: rgba(0, 0, 0, 0.5);
 `;

@@ -50,10 +50,21 @@ export const useScreenshot = () => {
     if (intervalId.current) {
       clearInterval(intervalId.current);
     }
+
+    // 3 秒後に初回を送信．以降 60 秒ごとに送信
+    const INITIAL_DELAY_SECONDS = 3;
     const INTERVAL_SECONDS = 60;
-    intervalId.current = setInterval(shareScreenshot, INTERVAL_SECONDS * 1000);
+
+    const timeoutId = setTimeout(() => {
+      shareScreenshot();
+      intervalId.current = setInterval(
+        shareScreenshot,
+        INTERVAL_SECONDS * 1000
+      );
+    }, INITIAL_DELAY_SECONDS * 1000);
 
     return () => {
+      clearTimeout(timeoutId);
       if (intervalId.current) {
         clearInterval(intervalId.current);
       }

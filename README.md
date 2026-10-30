@@ -17,7 +17,7 @@ yarn run dev
 スクリーンショットは GET: <VITE_RENBAI_BACKEND_URL>/screenshot から取得できます．
 
 ```
-VITE_RENBAI_BACKEND_URL=https://renbai-backend.yokohama.dev
+VITE_RENBAI_BACKEND_URL=https://renbai-counter.yokohama.dev
 VITE_RENBAI_BACKEND_TOKEN=<TOKEN>
 ```
 

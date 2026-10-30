@@ -30,10 +30,6 @@ const globalStyle = css`
     font-weight: 200;
     src: url("/sai/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
   }
-  @font-face {
-    font-family: "Gotham";
-    src: url("/sai/Gotham-Medium.otf") format("opentype");
-  }
 `;
 
 const Wrapper = styled.div`
@@ -70,7 +66,7 @@ const Soneki = styled.div`
   width: calc(var(--width) / 1920 * 300);
   line-height: 2.4;
   color: #000;
-  font-family: Gotham;
+  font-family: ShinGo;
   font-size: calc(var(--width) / 1920 * 70);
   font-weight: 600;
   position: absolute;
@@ -154,7 +150,7 @@ const CurrentTime = styled.div`
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
     rgba(0, 0, 0, 0.5);
-  font-family: Gotham;
+  font-family: ShinGo;
   font-size: calc(var(--width) / 1920 * 40);
   position: absolute;
   top: calc(var(--width) / 1920 * 380);

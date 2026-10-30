@@ -6,17 +6,17 @@ import { useImi } from "../useImi";
 
 const Wrapper = styled.div`
   width: 100%;
-  height: calc(100% - var(--width) / 1920 * 80);
+  height: calc(var(--height) / 100 * 90.8);
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 50;
+  z-index: 100;
 `;
 
 const Content = styled.div`
-  width: calc(var(--width) / 1920 * 1000);
+  width: calc(var(--width) / 100 * 50);
   height: 100%;
-  padding: calc(var(--width) / 1920 * 20) calc(var(--width) / 1920 * 30);
+  padding: calc(var(--height) / 100 * 2.0) calc(var(--width) / 100 * 2);
   border-top: solid calc(var(--width) / 1920 * 25) #0959cc;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.5);
@@ -34,30 +34,42 @@ const Yoron = styled.div`
   padding: calc(var(--width) / 1920 * 15) 0 calc(var(--width) / 1920 * 20)
     calc(var(--width) / 1920 * 10);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 `;
 
 const YoronHeader = styled.img`
-  width: 90%;
-  text-align: center;
-  margin-left: 5%;
-  margin-bottom: calc(var(--width) / 1920 * 25);
+  width: 95%;
+  margin: auto;
+  margin-bottom: calc(var(--height) / 100 * 3.5);
+  flex-shrink: 0;
 `;
 
 const YoronFooter = styled.img`
   width: 100%;
-  margin-top: calc(var(--width) / 1920 * 20);
+  margin-top: calc(var(--height) / 100 * 3);
+  margin-bottom: calc(var(--height) / 100 * -9.5);
+  flex-shrink: 0;
+`;
+
+// ヘッダーとフッターを置いた残りの高さに項目を収める
+const YoronList = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--width) / 100 * 0.5);
 `;
 
 const YoronItem = styled.div`
-  height: calc(var(--width) / 1920 * 65);
-  margin-bottom: calc(var(--width) / 1920 * 10);
+  flex: 1 1 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
 const YoronTitle = styled.div<{ small: boolean }>`
-  width: 45%;
+  width: 55%;
   line-height: 1;
   font-size: calc(var(--width) / 1920 * ${({ small }) => (small ? 25 : 40)});
   font-weight: 600;
@@ -68,8 +80,7 @@ const YoronTitle = styled.div<{ small: boolean }>`
 const YoronGraph = styled.div`
   width: 60%;
   height: 100%;
-  line-height: calc(var(--width) / 1920 * 65);
-  text-align: center;
+  line-height: 1;
   font-size: calc(var(--width) / 1920 * 40);
   display: flex;
   background: rgba(0, 0, 0, 0.5);
@@ -77,11 +88,17 @@ const YoronGraph = styled.div`
 
 const Yoronmeaningful = styled.div`
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #ffcc00;
 `;
 
 const YoronMeaningless = styled.div`
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #0048a9;
 `;
 
@@ -92,10 +109,10 @@ const Right = () => {
     <Wrapper>
       <Content>
         <Yoron>
-          <YoronHeader src={yoronHeaderAsset} alt="んぽたそ世論調査" />
-          <div>
+          <YoronHeader src={yoronHeaderAsset} alt="んぽたそ世論調査 2026" />
+          <YoronList>
             {imiResults.map((result) => (
-              <YoronItem>
+              <YoronItem key={result.id}>
                 <YoronTitle small={result.id === 7}>
                   {result.title}
                 </YoronTitle>
@@ -125,10 +142,10 @@ const Right = () => {
                 </YoronGraph>
               </YoronItem>
             ))}
-          </div>
+          </YoronList>
           <YoronFooter
             src={yoronFooterAsset}
-            alt="投票は以下のサイトから！ https://imi.lapla.workers.dev"
+            alt="投票は以下のサイトから！ imi.lapla.workers.dev"
           />
         </Yoron>
       </Content>

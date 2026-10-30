@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import Marquee from "react-fast-marquee";
 import styled from "@emotion/styled";
 import { css, Global } from "@emotion/react";
@@ -10,6 +10,7 @@ import TipName from "./TipName";
 import futokyakuAsset from "../assets/futokyaku.png";
 import waitingAsset from "../assets/waiting.png";
 import { useScreenshot } from "../useScreenshot";
+import { useScreenSize } from "../useScreenSize";
 import { type SalesSummary, useSalesSummary } from "../useSalesSummary";
 import { useTipRanking } from "../useTipRanking";
 
@@ -17,7 +18,7 @@ const globalStyle = css`
   @font-face {
     font-family: "ShinGo";
     font-weight: 700;
-    src: url("/sai/AP-OTF-ShinGoPr6N-Bold.otf") format("opentype");
+    src: url("/sai/AP-OTF-ShinGoPr6N-DeBold.otf") format("opentype");
   }
   @font-face {
     font-family: "ShinGo";
@@ -32,11 +33,6 @@ const globalStyle = css`
   @font-face {
     font-family: "Gotham";
     src: url("/sai/Gotham-Medium.otf") format("opentype");
-  }
-
-  :root {
-    --width: ${screen.width}px;
-    --height: ${screen.height}px;
   }
 `;
 
@@ -218,6 +214,7 @@ const Clock = ({ lastSyncedAt }: { lastSyncedAt: string | null }) => {
 
 const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useScreenSize();
 
   const summary: SalesSummary | null = useSalesSummary();
   const ranking = useTipRanking();
@@ -231,7 +228,10 @@ const App = () => {
     <>
       <Global styles={globalStyle} />
       <div ref={screenRef}>
-        <Wrapper id="screen">
+        <Wrapper
+          id="screen"
+          style={{ "--width": `${width}px`, "--height": `${height}px` } as CSSProperties}
+        >
           <video src="/sai/movie.mp4" autoPlay muted loop />
           <Right />
           <SonekiPanel>

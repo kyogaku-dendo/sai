@@ -14,11 +14,11 @@ const Wrapper = styled.footer`
   background-size: 100% 100%;
   position: absolute;
   bottom: 0;
-  z-index: 100;
+  z-index: 50;
 `;
 
 const Content = styled.div`
-  width: 100%;
+  width: 86%;
   height: calc(var(--width) / 1920 * 50);
   line-height: 1;
   color: #fff;

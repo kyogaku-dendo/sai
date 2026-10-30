@@ -5,8 +5,8 @@ import { css, Global } from "@emotion/react";
 import Footer from "./Footer";
 import FutokyakuTop from "./FutokyakuTop";
 import Right from "./Right";
+import SonekiPanel from "./SonekiPanel";
 
-import waitingAsset from "../assets/waiting.png";
 import { useScreenshot } from "../useScreenshot";
 import { useScreenSize } from "../useScreenSize";
 import { type SalesSummary, useSalesSummary } from "../useSalesSummary";
@@ -41,46 +41,15 @@ const Wrapper = styled.div`
   }
 `;
 
-// 去年の画像は左半分に「分待ち」が入っているので、右半分（損益分岐点・現在の売上）だけを見せる
-const SONEKI_CROP_LEFT = 470;
-
-const SonekiPanel = styled.div`
-  width: calc(var(--width) / 1920 * ${854 - SONEKI_CROP_LEFT});
-  height: calc(var(--width) / 1920 * 455);
-  background: url(${waitingAsset});
-  background-size: calc(var(--width) / 1920 * 854) 100%;
-  background-position: right top;
-  position: absolute;
-  bottom: calc(var(--width) / 1920 * 108);
-  left: 0;
-  z-index: 100;
-`;
-
-const Soneki = styled.div`
-  width: calc(var(--width) / 1920 * 300);
-  line-height: 2.4;
-  color: #000;
-  font-size: calc(var(--width) / 1920 * 70);
-  font-weight: 600;
-  position: absolute;
-  top: calc(var(--width) / 1920 * 105);
-  left: calc(var(--width) / 1920 * ${540 - SONEKI_CROP_LEFT});
-`;
-
-const Yen = styled.span`
-  font-size: calc(var(--width) / 1920 * 30);
-  margin-left: calc(var(--width) / 1920 * 5);
-`;
-
 const CurrentTime = styled.div`
   line-height: 1;
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
     rgba(0, 0, 0, 0.5);
-  font-size: calc(var(--width) / 1920 * 40);
+  font-size: calc(var(--height) / 100 * 3);
   position: absolute;
-  top: calc(var(--width) / 1920 * 380);
-  left: calc(var(--width) / 1920 * 40);
+  top: calc(var(--height) / 100 * 32.4);
+  left: calc(var(--height) / 100 * 3.8);
 `;
 
 const StaleNote = styled.div`
@@ -90,9 +59,6 @@ const StaleNote = styled.div`
 
 // hato の同期は 2 秒おきなので、これより古ければ会場の回線か Square への接続が切れている
 const STALE_AFTER_MS = 60 * 1000;
-
-const formatYen = (yen: number | null | undefined) =>
-  yen === null || yen === undefined ? "?????" : yen.toLocaleString("ja-JP");
 
 const formatCurrentTime = (ms: number) =>
   new Date(ms).toLocaleString("ja-JP", {
@@ -141,9 +107,20 @@ const App = () => {
   const ranking = useTipRanking();
   useScreenshot();
 
-  const displayFullScreen = () => {
-    screenRef.current?.requestFullscreen();
-  };
+  // F キーでフルスクリーンを切り替える
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "f" && e.key !== "F") return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        screenRef.current?.requestFullscreen();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <>
@@ -155,21 +132,12 @@ const App = () => {
         >
           <video src="/sai/movie.mp4" autoPlay muted loop />
           <Right />
-          <SonekiPanel>
-            <Soneki>
-              {formatYen(summary?.borderYen)}
-              <Yen>円</Yen>
-              <br />
-              {formatYen(summary?.salesYen)}
-              <Yen>円</Yen>
-            </Soneki>
-          </SonekiPanel>
+          <SonekiPanel summary={summary} />
           <FutokyakuTop ranking={ranking} />
           <Clock lastSyncedAt={summary?.lastSyncedAt ?? null} />
           <Footer summary={summary} ranking={ranking} />
         </Wrapper>
       </div>
-      <button onClick={displayFullScreen}>フルスクリーン</button>
     </>
   );
 };

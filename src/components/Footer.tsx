@@ -9,7 +9,7 @@ import TipName from "./TipName";
 
 const Wrapper = styled.footer`
   width: 100%;
-  aspect-ratio: 1920 / 128;
+  height: calc(var(--height) / 100 * 11.1);
   background: url(${footerAsset});
   background-size: 100% 100%;
   position: absolute;
@@ -18,24 +18,23 @@ const Wrapper = styled.footer`
 `;
 
 const Content = styled.div`
-  width: 86%;
-  height: calc(var(--width) / 1920 * 50);
+  width: calc(100% - var(--height) / 100 * 22);
   line-height: 1;
   color: #fff;
-  font-size: calc(var(--width) / 1920 * 50);
-  padding: 0 0 0 calc(var(--width) / 1920 * 40);
+  font-size: calc(var(--height) / 100 * 4.5);
   box-sizing: border-box;
   display: flex;
-  gap: calc(var(--width) / 1920 * 30);
+  align-items: center;
+  gap: calc(var(--height) / 100 * 2);
   position: absolute;
-  bottom: calc(var(--width) / 1920 * 44);
+  left: calc(var(--height) / 100 * 2);
+  bottom: calc(var(--height) / 100 * 3.2);
 `;
 
 const CurrentFutokyaku = styled.div`
-  height: calc(var(--width) / 1920 * 44);
-  margin: calc(var(--width) / 1920 * -4) 0;
-  padding: calc(var(--width) / 1920 * 8) calc(var(--width) / 1920 * 12);
-  border-radius: calc(var(--width) / 1920 * 4);
+  height: calc(var(--height) / 100 * 3.5);
+  padding: calc(var(--height) / 100 * 1) calc(var(--height) / 100 * 2);
+  border-radius: calc(var(--height) / 100 * 1);
   background: #ffcc00;
   display: inline-flex;
   align-items: center;

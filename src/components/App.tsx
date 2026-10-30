@@ -5,7 +5,7 @@ import { css, Global } from "@emotion/react";
 import Footer from "./Footer";
 import FutokyakuTop from "./FutokyakuTop";
 import Right from "./Right";
-import SonekiPanel from "./SonekiPanel";
+import Soneki from "./Soneki";
 
 import { useScreenshot } from "../useScreenshot";
 import { useScreenSize } from "../useScreenSize";
@@ -132,7 +132,7 @@ const App = () => {
         >
           <video src="/sai/movie.mp4" autoPlay muted loop />
           <Right />
-          <SonekiPanel summary={summary} />
+          <Soneki summary={summary} />
           <FutokyakuTop ranking={ranking} />
           <Clock lastSyncedAt={summary?.lastSyncedAt ?? null} />
           <Footer summary={summary} ranking={ranking} />

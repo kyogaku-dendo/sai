@@ -103,39 +103,34 @@ const Right = () => {
       <Content>
         <YoronHeader src={yoronHeaderAsset} alt="んぽたそ世論調査 2026" />
         <YoronList>
-          {imiResults.map((result) => (
-            <YoronItem key={result.id}>
-              <YoronTitle small={result.id === 7}>{result.title}</YoronTitle>
-              <YoronGraph>
-                <Yoronmeaningful
-                  style={{
-                    flexBasis:
-                      (result.meaningful /
-                        (result.meaningful + result.meaningless)) *
-                        100 +
-                      "%",
-                  }}
-                >
-                  {result.meaningful}
-                </Yoronmeaningful>
-                <YoronMeaningless
-                  style={{
-                    flexBasis:
-                      (result.meaningless /
-                        (result.meaningful + result.meaningless)) *
-                        100 +
-                      "%",
-                  }}
-                >
-                  {result.meaningless}
-                </YoronMeaningless>
-              </YoronGraph>
-            </YoronItem>
-          ))}
+          {imiResults.map((result) => {
+            const total = result.meaningful + result.meaningless;
+            return (
+              <YoronItem key={result.id}>
+                <YoronTitle small={result.id === 7}>{result.title}</YoronTitle>
+                <YoronGraph>
+                  <Yoronmeaningful
+                    style={{
+                      flexBasis: `${total ? (result.meaningful / total) * 100 : 50}%`,
+                    }}
+                  >
+                    {result.meaningful}
+                  </Yoronmeaningful>
+                  <YoronMeaningless
+                    style={{
+                      flexBasis: `${total ? (result.meaningless / total) * 100 : 50}%`,
+                    }}
+                  >
+                    {result.meaningless}
+                  </YoronMeaningless>
+                </YoronGraph>
+              </YoronItem>
+            );
+          })}
         </YoronList>
         <YoronFooter
           src={yoronFooterAsset}
-          alt="投票は以下のサイトから！ imi.lapla.workers.dev"
+          alt="投票は以下のサイトから！ https://imi.lapla.workers.dev"
         />
       </Content>
     </Wrapper>

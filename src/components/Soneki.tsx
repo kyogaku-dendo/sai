@@ -90,7 +90,7 @@ const formatYen = (yen: number | null | undefined) =>
 // 損益分岐点を超えても★の線が棒の上端に張り付かないよう、目盛りに余白を持たせる
 const BAR_HEADROOM = 1.15;
 
-const SonekiPanel = ({ summary }: { summary: SalesSummary | null }) => {
+const Soneki = ({ summary }: { summary: SalesSummary | null }) => {
   const salesYen = summary?.salesYen ?? 0;
   const borderYen = summary?.borderYen ?? null;
   const scaleYen = Math.max(salesYen, borderYen ?? 0) * BAR_HEADROOM;
@@ -122,4 +122,4 @@ const SonekiPanel = ({ summary }: { summary: SalesSummary | null }) => {
   );
 };
 
-export default SonekiPanel;
+export default Soneki;

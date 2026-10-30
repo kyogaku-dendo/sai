@@ -9,6 +9,7 @@ Vite + React + TypeScript で構築された，驚額の殿堂用のデジタル
 ```
 yarn
 yarn run dev
+yarn run dev:local # hato に繋がずダミーデータを使用
 ```
 
 ### スクリーンショットの共有

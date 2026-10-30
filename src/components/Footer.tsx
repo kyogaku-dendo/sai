@@ -8,41 +8,53 @@ import TipName from "./TipName";
 
 const Wrapper = styled.footer`
   width: 100%;
-  aspect-ratio: 1920 / 128;
+  height: calc(var(--height) / 100 * 11.1);
   background: url(${footerAsset});
   background-size: 100% 100%;
   position: absolute;
   bottom: 0;
-  z-index: 100;
+  z-index: 50;
 `;
 
 const Content = styled.div`
-  width: 100%;
-  height: calc(var(--width) / 1920 * 50);
-  line-height: 1;
-  color: #fff;
-  font-size: calc(var(--width) / 1920 * 50);
+  width: calc(100% - var(--height) / 100 * 22);
+  font-size: calc(var(--height) / 100 * 4.5);
   white-space: nowrap;
-  display: flex;
+  box-sizing: border-box;
   position: absolute;
-  bottom: calc(var(--width) / 1920 * 44);
+  left: calc(var(--height) / 100 * 2);
+  bottom: calc(var(--height) / 100 * 3.2);
+`;
+
+const Line = styled.span`
+  color: #fff;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+`;
+
+const Separator = styled.div`
+  display: inline-block;
+  margin: 0 0.1em;
+`;
+
+const Body = styled.div`
+  display: inline-block;
+  margin-top: -0.04em;
 `;
 
 // 見出しは左に固定せず流れる文の中に置き、区切りごとに何の一覧かを示す。
 // react-fast-marquee が中で --width を自分の幅に書き換えるので、大きさは周りの文字に対する em で決める
 const Heading = styled.span`
-  height: 1.2em;
   margin-right: 0.5em;
-  padding: 0 0.3em;
+  padding: 0.25em 0.3em;
   border-radius: 0.1em;
   color: #000060;
-  font-size: 0.76em;
+  font-size: 0.8em;
   font-weight: 700;
   line-height: 1;
   background: #ffcc00;
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
+  display: inline-block;
 `;
 
 const WELCOME_TEXT = "驚額の殿堂ファイナルへようこそ";
@@ -56,7 +68,9 @@ const jstDate = (now: Date) =>
 
 const isToday = (today: SalesSummary["today"]) =>
   // 回線断の間は前日の値が残っていることがあるので、日付が今日のものだけを出す
-  today !== undefined && today.date === jstDate(new Date()) && today.items.length > 0;
+  today !== undefined &&
+  today.date === jstDate(new Date()) &&
+  today.items.length > 0;
 
 const describeItems = (today: NonNullable<SalesSummary["today"]>) => {
   const items = today.items
@@ -85,25 +99,29 @@ const Footer = ({
     <Wrapper>
       <Content>
         <Marquee speed={100}>
-          <Heading>現在の太客</Heading>
-          {ranking.length > 0
-            ? ranking.map((entry, i) => (
-                <span key={`${entry.rank} ${entry.name}`}>
-                  {i > 0 && " ／ "}
-                  <TipName name={entry.name} />
-                </span>
-              ))
-            : FUTOKYAKU_WAITING_TEXT}
-          {SEPARATOR}
-          {today && isToday(today) ? (
-            <>
-              <Heading>本日の販売数</Heading>
-              {describeItems(today)}
-            </>
-          ) : (
-            WELCOME_TEXT
-          )}
-          {SEPARATOR}
+          <Line>
+            <Heading>現在の太客</Heading>
+            <Body>
+              {ranking.length > 0
+                ? ranking.map((entry, i) => (
+                    <span key={`${entry.rank} ${entry.name}`}>
+                      {i > 0 && <Separator>／</Separator>}
+                      <TipName name={entry.name} />
+                    </span>
+                  ))
+                : FUTOKYAKU_WAITING_TEXT}
+            </Body>
+            <Body>{SEPARATOR}</Body>
+            {today && isToday(today) ? (
+              <>
+                <Heading>本日の販売数</Heading>
+                <Body>{describeItems(today)}</Body>
+              </>
+            ) : (
+              <Body>{WELCOME_TEXT}</Body>
+            )}
+            <Body>{SEPARATOR}</Body>
+          </Line>
         </Marquee>
       </Content>
     </Wrapper>

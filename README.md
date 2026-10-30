@@ -9,6 +9,7 @@ Vite + React + TypeScript で構築された，驚額の殿堂用のデジタル
 ```
 yarn
 yarn run dev
+yarn run dev:local # hato に繋がずダミーデータを使用
 ```
 
 ### スクリーンショットの共有
@@ -17,7 +18,7 @@ yarn run dev
 スクリーンショットは GET: <VITE_RENBAI_BACKEND_URL>/screenshot から取得できます．
 
 ```
-VITE_RENBAI_BACKEND_URL=https://renbai-backend.yokohama.dev
+VITE_RENBAI_BACKEND_URL=https://renbai-counter.yokohama.dev
 VITE_RENBAI_BACKEND_TOKEN=<TOKEN>
 ```
 
@@ -42,7 +43,7 @@ yarn build
 yarn preview
 ```
 
-`http://localhost:3000/sai` を開き，「フルスクリーン」を押します．
+`http://localhost:3000/sai` を開き，F キーを押してフルスクリーン表示にします．
 
 - 回線が切れたり hato が止まったりしても，最後に読めた売上を出し続けます．画面を再読み込みしても消えません（localStorage に保存）．
 - 売上が 1 分以上更新されないときは，時計の下に「売上は hh:mm 時点」と表示します．

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { DUMMY_TIP_RANKING, USE_DUMMY } from "./dummyData";
+
 /** 太客ランキングの 1 人。同じ金額は同じ順位。name の黒塗りした文字は ■ */
 export type TipRankEntry = { rank: number; name: string; tipYen: number };
 
@@ -22,9 +24,14 @@ const readCached = (): TipRankEntry[] => {
  * hato が止まっても、最後に読めたランキングを出し続ける
  */
 export const useTipRanking = () => {
-  const [ranking, setRanking] = useState<TipRankEntry[]>(readCached);
+  const [ranking, setRanking] = useState<TipRankEntry[]>(() =>
+    USE_DUMMY ? DUMMY_TIP_RANKING : readCached()
+  );
 
   useEffect(() => {
+    if (USE_DUMMY) {
+      return;
+    }
     const sync = async () => {
       try {
         const response = await fetch(`${HATO_URL}/tip-names`);

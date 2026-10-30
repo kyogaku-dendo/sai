@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { dummySalesSummary, USE_DUMMY } from "./dummyData";
+
 // 会場 PC で動く hato（https://github.com/kyogaku-dendo/hato）の売上集計
 export type SalesSummary = {
   salesYen: number;
@@ -36,10 +38,16 @@ const readCached = (): SalesSummary | null => {
  * 画面を再読み込みしても消えないよう、最後の値は localStorage にも残す。
  */
 export const useSalesSummary = () => {
-  const [summary, setSummary] = useState<SalesSummary | null>(readCached);
+  const [summary, setSummary] = useState<SalesSummary | null>(() =>
+    USE_DUMMY ? dummySalesSummary() : readCached()
+  );
 
   useEffect(() => {
     const sync = async () => {
+      if (USE_DUMMY) {
+        setSummary(dummySalesSummary());
+        return;
+      }
       try {
         const response = await fetch(`${HATO_URL}/summary`);
         if (!response.ok) throw new Error(`hato returned ${response.status}`);

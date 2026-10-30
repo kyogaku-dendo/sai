@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import Marquee from "react-fast-marquee";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { css, Global } from "@emotion/react";
 
 import Footer from "./Footer";
+import FutokyakuTop from "./FutokyakuTop";
 import Right from "./Right";
 import Soneki from "./Soneki";
-import TipName from "./TipName";
 
-import futokyakuAsset from "../assets/futokyaku.png";
 import { useScreenshot } from "../useScreenshot";
+import { useScreenSize } from "../useScreenSize";
 import { type SalesSummary, useSalesSummary } from "../useSalesSummary";
 import { useTipRanking } from "../useTipRanking";
 
@@ -17,26 +16,13 @@ const globalStyle = css`
   @font-face {
     font-family: "ShinGo";
     font-weight: 700;
-    src: url("/sai/AP-OTF-ShinGoPr6N-Bold.otf") format("opentype");
+    src: url("/sai/AP-OTF-ShinGoPr6N-DeBold.otf") format("opentype");
   }
+    
   @font-face {
     font-family: "ShinGo";
     font-weight: 500;
     src: url("/sai/AP-OTF-ShinGoPr6N-Medium.otf") format("opentype");
-  }
-  @font-face {
-    font-family: "ShinGo";
-    font-weight: 200;
-    src: url("/sai/AP-OTF-ShinGoPr6N-Light.otf") format("opentype");
-  }
-  @font-face {
-    font-family: "Gotham";
-    src: url("/sai/Gotham-Medium.otf") format("opentype");
-  }
-
-  :root {
-    --width: ${screen.width}px;
-    --height: ${screen.height}px;
   }
 `;
 
@@ -55,88 +41,20 @@ const Wrapper = styled.div`
   }
 `;
 
-const Futokyaku = styled.div`
-  width: calc(var(--width) / 1920 * 712);
-  height: calc(var(--width) / 1920 * 347);
-  line-height: 1;
-  color: #fff;
-  text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
-    rgba(0, 0, 0, 0.5);
-  background: url(${futokyakuAsset});
-  background-size: 100% 100%;
-  position: absolute;
-  top: calc(var(--width) / 1920 * 20);
-  left: 0;
-`;
-
-const FutokyakuList = styled.div`
-  position: absolute;
-  top: calc(var(--width) / 1920 * 6);
-  left: calc(var(--width) / 1920 * 100);
-`;
-
-// 順位が上の人ほど大きく出す
-const FutokyakuItem = styled.div<{ rank: number }>`
-  line-height: calc(var(--width) / 1920 * 114);
-  font-size: ${({ rank }) => `calc(var(--width) / 1920 * ${70 - Math.min(rank, 3) * 10})`};
-  display: flex;
-  align-items: center;
-  gap: calc(var(--width) / 1920 * 10);
-`;
-
-const FutokyakuNo = styled.div`
-  width: calc(var(--width) / 1920 * 80);
-`;
-
-const FutokyakuName = styled.div`
-  width: calc(var(--width) / 1920 * 480);
-  font-weight: 200;
-  white-space: nowrap;
-`;
-
-// 英字と半角スペースは 0.5em、それ以外は 1em として幅を見積もる
-const nameWidthEm = (name: string) =>
-  [...name].reduce((sum, char) => sum + (/^[A-Za-z0-9 ]$/.test(char) ? 0.5 : 1), 0);
-
-// 上位 3 人まで。枠に収まらない長い名前は流す
-const FutokyakuTop = ({ ranking }: { ranking: { rank: number; name: string }[] }) => (
-  <Futokyaku>
-    <FutokyakuList>
-      {ranking.slice(0, 3).map((entry) => (
-        <FutokyakuItem rank={entry.rank} key={`${entry.rank} ${entry.name}`}>
-          <FutokyakuNo>{entry.rank}.</FutokyakuNo>
-          <FutokyakuName>
-            {nameWidthEm(entry.name) > 7 ? (
-              <Marquee speed={100}>
-                <TipName name={entry.name} />
-                {"\u3000"}
-              </Marquee>
-            ) : (
-              <TipName name={entry.name} />
-            )}
-          </FutokyakuName>
-        </FutokyakuItem>
-      ))}
-    </FutokyakuList>
-  </Futokyaku>
-);
-
 const CurrentTime = styled.div`
   line-height: 1;
   color: #fff;
   text-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 20)
     rgba(0, 0, 0, 0.5);
-  font-family: Gotham;
-  font-size: calc(var(--width) / 1920 * 40);
+  font-size: calc(var(--height) / 100 * 3);
   position: absolute;
-  top: calc(var(--width) / 1920 * 380);
-  left: calc(var(--width) / 1920 * 40);
+  top: calc(var(--height) / 100 * 32.4);
+  left: calc(var(--height) / 100 * 3.8);
 `;
 
 const StaleNote = styled.div`
   margin-top: calc(var(--width) / 1920 * 12);
   font-size: calc(var(--width) / 1920 * 26);
-  font-family: "ShinGo";
 `;
 
 // hato の同期は 2 秒おきなので、これより古ければ会場の回線か Square への接続が切れている
@@ -183,32 +101,43 @@ const Clock = ({ lastSyncedAt }: { lastSyncedAt: string | null }) => {
 
 const App = () => {
   const screenRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useScreenSize();
 
   const summary: SalesSummary | null = useSalesSummary();
   const ranking = useTipRanking();
   useScreenshot();
 
-  const displayFullScreen = () => {
-    screenRef.current?.requestFullscreen();
-  };
+  // F キーでフルスクリーンを切り替える
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "f" && e.key !== "F") return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        screenRef.current?.requestFullscreen();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <>
       <Global styles={globalStyle} />
       <div ref={screenRef}>
-        <Wrapper id="screen">
+        <Wrapper
+          id="screen"
+          style={{ "--width": `${width}px`, "--height": `${height}px` } as CSSProperties}
+        >
           <video src="/sai/movie.mp4" autoPlay muted loop />
           <Right />
-          <Soneki
-            salesYen={summary?.salesYen ?? null}
-            borderYen={summary?.borderYen ?? null}
-          />
+          <Soneki summary={summary} />
           <FutokyakuTop ranking={ranking} />
           <Clock lastSyncedAt={summary?.lastSyncedAt ?? null} />
           <Footer summary={summary} ranking={ranking} />
         </Wrapper>
       </div>
-      <button onClick={displayFullScreen}>フルスクリーン</button>
     </>
   );
 };

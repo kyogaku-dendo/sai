@@ -1,88 +1,125 @@
 import styled from "@emotion/styled";
 
-// 去年の「分待ち」パネル（waiting.png）の右半分と同じ見た目を、左半分なしの 1 枚のカードとして描く。
-// 画像の切り抜きでは左の角が欠けるので CSS で描き、空いた分だけ大きくする
-const Card = styled.div`
-  width: calc(var(--width) / 1920 * 720);
-  height: calc(var(--width) / 1920 * 450);
-  padding: calc(var(--width) / 1920 * 40) calc(var(--width) / 1920 * 40) 0
-    calc(var(--width) / 1920 * 130);
-  border-radius: calc(var(--width) / 1920 * 40);
-  box-sizing: border-box;
+import type { SalesSummary } from "../useSalesSummary";
+
+const Panel = styled.div`
+  line-height: 1;
   color: #000;
-  background: linear-gradient(135deg, #ea8478 0%, #eba84a 50%, #e9d21a 100%);
-  box-shadow: 0 calc(var(--width) / 1920 * 10) calc(var(--width) / 1920 * 30)
-    rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  position: absolute;
-  bottom: calc(var(--width) / 1920 * 150);
-  left: calc(var(--width) / 1920 * 30);
-  z-index: 100;
-
-  /* 去年の画像と同じく、上は少し空けて下の縁まで届く青い帯 */
-  &::before {
-    content: "";
-    width: calc(var(--width) / 1920 * 44);
-    background: #0048a9;
-    position: absolute;
-    top: calc(var(--width) / 1920 * 40);
-    bottom: 0;
-    left: calc(var(--width) / 1920 * 50);
-  }
-`;
-
-const Label = styled.div`
-  line-height: 1;
-  font-size: calc(var(--width) / 1920 * 46);
-  font-weight: 700;
-`;
-
-// 「損益分岐点」の下の線は、青い帯からカードの右端近くまで引く
-const Rule = styled.div`
-  height: calc(var(--width) / 1920 * 3);
-  margin: calc(var(--width) / 1920 * 22) 0 0 calc(var(--width) / 1920 * -80);
-  background: #222;
-`;
-
-const Amount = styled.div`
-  margin: calc(var(--width) / 1920 * 22) 0 calc(var(--width) / 1920 * 36);
-  line-height: 1;
-  font-family: Gotham;
-  font-size: calc(var(--width) / 1920 * 104);
+  background: linear-gradient(
+    to right,
+    rgba(255, 204, 0, 0.8),
+    rgba(255, 204, 0, 0.7)
+  );
+  border-top-right-radius: calc(var(--height) / 100 * 2);
+  border-bottom-right-radius: calc(var(--height) / 100 * 2);
+  box-sizing: border-box;
   font-weight: 600;
-  white-space: nowrap;
+  display: flex;
+  align-items: stretch;
+  position: absolute;
+  bottom: calc(var(--height) / 100 * 14);
+  left: 0;
+  z-index: 100;
+`;
+
+const Bar = styled.div`
+  width: calc(var(--height) / 100 * 6);
+  position: relative;
+  background: #ffcc00;
+`;
+
+const BarInner = styled.div<{ ratio: number }>`
+  width: 70%;
+  height: calc(100% * ${({ ratio }) => ratio});
+  margin-left: 15%;
+  border-top-left-radius: calc(var(--height) / 100 * 0.4);
+  border-top-right-radius: calc(var(--height) / 100 * 0.4);
+  background: #0048a9;
+  position: absolute;
+  bottom: 0;
+`;
+
+const BorderLine = styled.div<{ ratio: number }>`
+  height: calc(var(--height) / 100 * 0.3);
+  background: #ff6633;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% * ${({ ratio }) => ratio});
+  transform: translateY(50%);
+`;
+
+const BorderStar = styled.div`
+  color: #ff6633;
+  font-size: calc(var(--height) / 100 * 2.4);
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(80%, -50%);
+`;
+
+const Content = styled.div`
+  padding-top: calc(var(--height) / 100 * 2.5);
+  padding-right: calc(var(--height) / 100 * 3.5);
+  padding-bottom: calc(var(--height) / 100 * 0.2);
+  padding-left: calc(var(--height) / 100 * 2.5);
+`;
+
+const Heading = styled.div`
+  width: 50%;
+  font-size: calc(var(--height) / 100 * 3);
+  margin-bottom: calc(var(--height) / 100 * 1.5);
+  padding-bottom: calc(var(--height) / 100 * 1);
+  border-bottom: solid calc(var(--height) / 100 * 0.2) rgba(0, 0, 0, 0.5);
+`;
+
+const Value = styled.div`
+  font-size: calc(var(--height) / 100 * 7);
+  margin-bottom: calc(var(--height) / 100 * 2);
 `;
 
 const Yen = styled.span`
-  font-family: "ShinGo";
-  font-size: 0.4em;
-  font-weight: 700;
-  margin-left: calc(var(--width) / 1920 * 8);
+  font-size: 50%;
+  margin-left: calc(var(--height) / 1920 * 5);
 `;
 
-const formatYen = (yen: number | null) =>
-  yen === null ? "?????" : yen.toLocaleString("ja-JP");
+const formatYen = (yen: number | null | undefined) =>
+  yen === null || yen === undefined ? "?????" : yen.toLocaleString("ja-JP");
 
-const Soneki = ({
-  salesYen,
-  borderYen,
-}: {
-  salesYen: number | null;
-  borderYen: number | null;
-}) => (
-  <Card>
-    <Label>損益分岐点</Label>
-    <Rule />
-    <Amount>
-      {formatYen(borderYen)}
-      <Yen>円</Yen>
-    </Amount>
-    <Label>現在の売上</Label>
-    <Amount>
-      {formatYen(salesYen)}
-      <Yen>円</Yen>
-    </Amount>
-  </Card>
-);
+// 損益分岐点を超えても★の線が棒の上端に張り付かないよう、目盛りに余白を持たせる
+const BAR_HEADROOM = 1.15;
+
+const Soneki = ({ summary }: { summary: SalesSummary | null }) => {
+  const salesYen = summary?.salesYen ?? 0;
+  const borderYen = summary?.borderYen ?? null;
+  const scaleYen = Math.max(salesYen, borderYen ?? 0) * BAR_HEADROOM;
+  const toRatio = (yen: number) => (scaleYen > 0 ? yen / scaleYen : 0);
+
+  return (
+    <Panel>
+      <Bar>
+        <BarInner ratio={toRatio(salesYen)} />
+        {borderYen !== null && (
+          <BorderLine ratio={toRatio(borderYen)}>
+            <BorderStar>★</BorderStar>
+          </BorderLine>
+        )}
+      </Bar>
+      <Content>
+        <Heading>★損益分岐点</Heading>
+        <Value>
+          {formatYen(summary?.borderYen)}
+          <Yen>円</Yen>
+        </Value>
+        <Heading>現在の売上</Heading>
+        <Value>
+          {formatYen(summary?.salesYen)}
+          <Yen>円</Yen>
+        </Value>
+      </Content>
+    </Panel>
+  );
+};
 
 export default Soneki;

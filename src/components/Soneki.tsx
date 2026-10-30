@@ -67,7 +67,7 @@ const Content = styled.div`
 `;
 
 const Heading = styled.div`
-  width: 50%;
+  width: calc(var(--height) / 100 * 3 * 6);
   font-size: calc(var(--height) / 100 * 3);
   margin-bottom: calc(var(--height) / 100 * 1.5);
   padding-bottom: calc(var(--height) / 100 * 1);
